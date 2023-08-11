@@ -7,30 +7,13 @@ const express = require('express');
 
 
 
-// async function verifyUser(req, res, next) {
-//   const token = req.headers.authorization;
-//   try {
-//     const decodedToken = await auth.verifyIdToken(token);
-//     req.user = decodedToken;
-//     res.status(200).send('Login Successful');
-//     next();
-//   } catch (error) {
-//     res.status(403).send('Unauthorized');
-//   }
-// }
-// Inside verifyUser middleware:
+
 
 async function verifyUser(req, res, next) {
   const token = req.headers.authorization;
 try {
   const decodedToken = await auth.verifyIdToken(token);
-    // req.user = decodedToken;
-    //  res.status(200).send('Login Successful');
-
-  //   try {
-  //     const decodedToken = await auth.verifyIdToken(token);
-  //     req.user = decodedToken;
-  //     res.status(200).send('Login Successful');
+   
   if (decodedToken) {
     // Token is valid. Attach the decoded token or user data to the request for further processing, if needed.
     req.user = decodedToken;

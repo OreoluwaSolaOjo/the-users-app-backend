@@ -4,18 +4,7 @@ const { db } = require('./firebaseConfig');
 const adminAuth = require('./firebaseConfig').auth;
 const { verifyUser, verifyAdmin } = require('./middlewares');
 const fetch = require('node-fetch');
-// router.post('/submit-data', verifyUser, async (req, res) => {
-//   //... same as before
-//   const userData = {
-//     companyName: req.body.companyName,
-//     numOfUsers: req.body.numOfUsers,
-//     numOfProducts: req.body.numOfProducts,
-//     percentage: req.body.percentage,
-//   };
 
-//   await db.collection('users').doc(req.user.uid).set(userData);
-//   res.send({success: 'Data saved successfully'});
-// });
 router.post('/submit-data', verifyUser, async (req, res) => {
   const userData = {
     role: "user",
@@ -42,12 +31,21 @@ router.post('/login', verifyUser, (req, res) => {
   return res.status(200).send({ message: 'Token verified successfully.' });
 });
 router.get('/retrieve-data/:userId', verifyUser, verifyAdmin, async (req, res) => {
-  //... same as before
+
   const doc = await db.collection('users').doc(req.params.userId).get();
   if (!doc.exists) {
     res.status(404).send('No user data found');
   } else {
     res.send(doc.data());
+  }
+});
+router.get('/retrieve-single-data/:userId', verifyUser, async (req, res) => {
+
+  const doc = await db.collection('users').doc(req.params.userId).get();
+  if (!doc.exists) {
+    res.status(404).send('No user data found');
+  } else {
+    res.send({message: "User Found Successfully", data: doc.data()});
   }
 });
 
@@ -56,67 +54,7 @@ const multer = require('multer');
 const multerStorage = multer.memoryStorage(); // Store the file in memory
 const upload = multer({ storage: multerStorage }); // Use the in-memory storage
 
-// const multer = require('multer');
-// const upload = multer({ dest: 'uploads/' }); // Configure as needed
 
-// router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
-//     try {
-//         const userIdToEdit = req.params.userId;
-
-//         // Assuming you're sending the image as a file with the field name 'image'.
-//         // The file's path will be in req.file.path.
-//         if (!req.file) {
-//             return res.status(400).send({ error: 'No image provided.' });
-//         }
-
-//         const imagePath = req.file.path;
-
-//         // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
-//         // and then save the URL to Firestore. For now, let's just save the local path:
-//         await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
-
-//         res.send({ success: 'User updated successfully' });
-//     } catch (error) {
-//         console.error("Error updating user:", error);
-//         res.status(500).send({ error: 'Internal Server Error' });
-//     }
-// });
-// router.post('/edit-user/:userId', verifyAdmin, (req, res, next) => {
-//   upload.single('image')(req, res, function (err) {
-//     if (err instanceof multer.MulterError) {
-//       // A Multer error occurred when uploading.
-//       return res.status(400).send({ error: 'Multer error: ' + err.message });
-//     } else if (err) {
-//       // An unknown error occurred when uploading.
-//       return res.status(500).send({ error: 'Upload error' });
-//     }
-
-//     // Everything went fine; proceed to next middleware.
-//     next();
-//   });
-// }, async (req, res) => {
-//   // ... rest of your endpoint logic ...
-//     try {
-//         const userIdToEdit = req.params.userId;
-
-//         // Assuming you're sending the image as a file with the field name 'image'.
-//         // The file's path will be in req.file.path.
-//         if (!req.file) {
-//             return res.status(400).send({ error: 'No image provided.' });
-//         }
-
-//         const imagePath = req.file.path;
-
-//         // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
-//         // and then save the URL to Firestore. For now, let's just save the local path:
-//         await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
-
-//         res.send({ success: 'User updated successfully' });
-//     } catch (error) {
-//         console.error("Error updating user:", error);
-//         res.status(500).send({ error: 'Internal Server Error' });
-//     }
-// });
 
 
 router.post('/set-admin', (req, res) => {
@@ -217,6 +155,6 @@ router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (re
 });
 
 
-// ... other routes
+
 
 module.exports = router;
