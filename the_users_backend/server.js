@@ -7,7 +7,8 @@ const app = express();
 
 
 app.use(cors({
-  origin: 'https://64d5dcd0ff6c0b35036ba6ab--earnest-strudel-469a22.netlify.app',
+ 
+  origin: 'https://64d5f6db7734c2418560c52f--earnest-strudel-469a22.netlify.app',
   credentials: true
 }));
 
