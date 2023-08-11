@@ -12,4 +12,4 @@ app.listen(3002, () => {
   console.log('Server running on port 3000');
 });
 
-module.exports = vercel(app);
+
