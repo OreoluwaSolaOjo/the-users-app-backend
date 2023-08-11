@@ -13,7 +13,7 @@ const app = express();
 // }));
 const allowedOrigins = [
   'https://64d5ff21a3736a46e03551eb--earnest-strudel-469a22.netlify.app',
-  'https://64d5ff21a3736a46e03551eb--earnest-strudel-469a22.netlify.app',
+  'https://64d5dcd0ff6c0b35036ba6ab--earnest-strudel-469a22.netlify.app',
   //... you can add other allowed URLs here
 ];
 
