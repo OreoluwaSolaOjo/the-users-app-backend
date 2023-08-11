@@ -13,6 +13,7 @@ router.post('/submit-data', verifyUser, async (req, res) => {
     numOfProducts: req.body.numOfProducts,
     percentage: req.body.percentage,
     email: req.body.email,
+    image: req.body.image
   };
 
   try {
