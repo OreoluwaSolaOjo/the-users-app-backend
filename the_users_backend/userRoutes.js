@@ -183,7 +183,7 @@ router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (re
 
     blobStream.on('finish', async () => {
       // The file upload is complete.
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}`;
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
 
       // Update the user document with the image URL
       await db.collection('users').doc(userIdToEdit).update({ image: publicUrl });
