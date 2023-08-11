@@ -51,6 +51,10 @@ router.get('/retrieve-data/:userId', verifyUser, verifyAdmin, async (req, res) =
   }
 });
 
+const multer = require('multer');
+
+const multerStorage = multer.memoryStorage(); // Store the file in memory
+const upload = multer({ storage: multerStorage }); // Use the in-memory storage
 
 // const multer = require('multer');
 // const upload = multer({ dest: 'uploads/' }); // Configure as needed
