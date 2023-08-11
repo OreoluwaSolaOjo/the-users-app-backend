@@ -194,10 +194,12 @@ router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (re
     // ... your code ...
     
     blobStream.on('finish', async () => {
-       const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
-    
+      //  const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(bucket.name)}/o/${encodeURIComponent(blob.name)}?alt=media`;
+
        // Check if the URL is accessible
        const response = await fetch(publicUrl);
+       console.log("this is response", response)
        if (response.status !== 200) {
           return res.status(500).send({ error: 'Generated image URL is not accessible' });
        }
