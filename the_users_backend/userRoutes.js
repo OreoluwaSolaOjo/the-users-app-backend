@@ -52,31 +52,31 @@ router.get('/retrieve-data/:userId', verifyUser, verifyAdmin, async (req, res) =
 });
 
 
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // Configure as needed
+// const multer = require('multer');
+// const upload = multer({ dest: 'uploads/' }); // Configure as needed
 
-router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
-    try {
-        const userIdToEdit = req.params.userId;
+// router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
+//     try {
+//         const userIdToEdit = req.params.userId;
 
-        // Assuming you're sending the image as a file with the field name 'image'.
-        // The file's path will be in req.file.path.
-        if (!req.file) {
-            return res.status(400).send({ error: 'No image provided.' });
-        }
+//         // Assuming you're sending the image as a file with the field name 'image'.
+//         // The file's path will be in req.file.path.
+//         if (!req.file) {
+//             return res.status(400).send({ error: 'No image provided.' });
+//         }
 
-        const imagePath = req.file.path;
+//         const imagePath = req.file.path;
 
-        // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
-        // and then save the URL to Firestore. For now, let's just save the local path:
-        await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
+//         // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
+//         // and then save the URL to Firestore. For now, let's just save the local path:
+//         await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
 
-        res.send({ success: 'User updated successfully' });
-    } catch (error) {
-        console.error("Error updating user:", error);
-        res.status(500).send({ error: 'Internal Server Error' });
-    }
-});
+//         res.send({ success: 'User updated successfully' });
+//     } catch (error) {
+//         console.error("Error updating user:", error);
+//         res.status(500).send({ error: 'Internal Server Error' });
+//     }
+// });
 // router.post('/edit-user/:userId', verifyAdmin, (req, res, next) => {
 //   upload.single('image')(req, res, function (err) {
 //     if (err instanceof multer.MulterError) {
@@ -148,6 +148,52 @@ router.get('/retrieve-non-admin-users', verifyAdmin, async (req, res) => {
     res.status(500).send('Error retrieving non-admin users');
   }
 });
+
+
+
+
+
+const { Storage } = require('@google-cloud/storage');
+const storage = new Storage({
+  projectId: 'the-users-app',
+  keyFilename: './the-users-app-firebase.json'
+});
+const bucket = storage.bucket('gs://the-users-app.appspot.com/');
+
+router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const userIdToEdit = req.params.userId;
+
+    if (!req.file) {
+      return res.status(400).send({ error: 'No image provided.' });
+    }
+
+    // Upload the image to Firebase Cloud Storage
+    const blob = bucket.file(`user_images/${req.file.originalname}`);
+    const blobStream = blob.createWriteStream();
+
+    blobStream.on('error', (err) => {
+      console.error('Error uploading file:', err);
+      res.status(500).send({ error: 'Error uploading file' });
+    });
+
+    blobStream.on('finish', async () => {
+      // The file upload is complete.
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}`;
+
+      // Update the user document with the image URL
+      await db.collection('users').doc(userIdToEdit).update({ image: publicUrl });
+      res.send({ success: 'User updated successfully', imageUrl: publicUrl });
+    });
+
+    blobStream.end(req.file.buffer);
+
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
 
 // ... other routes
 
