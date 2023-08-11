@@ -162,7 +162,7 @@ const storage = new Storage({
   projectId: 'the-users-app',
   keyFilename: './the-users-app-firebase.json'
 });
-const bucket = storage.bucket('gs://the-users-app.appspot.com/');
+const bucket = storage.bucket('the-users-app.appspot.com/');
 
 router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
   try {
