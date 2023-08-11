@@ -3,7 +3,7 @@ const router = express.Router();
 const { db } = require('./firebaseConfig');
 const adminAuth = require('./firebaseConfig').auth;
 const { verifyUser, verifyAdmin } = require('./middlewares');
-
+const fetch = require('node-fetch');
 // router.post('/submit-data', verifyUser, async (req, res) => {
 //   //... same as before
 //   const userData = {
@@ -181,15 +181,31 @@ router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (re
       res.status(500).send({ error: 'Error uploading file' });
     });
 
+    // blobStream.on('finish', async () => {
+    //   // The file upload is complete.
+    //   const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
+
+    //   // Update the user document with the image URL
+    //   await db.collection('users').doc(userIdToEdit).update({ image: publicUrl });
+    //   res.send({ success: 'User updated successfully', imageUrl: publicUrl });
+    // });
+
+
+    // ... your code ...
+    
     blobStream.on('finish', async () => {
-      // The file upload is complete.
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
-
-      // Update the user document with the image URL
-      await db.collection('users').doc(userIdToEdit).update({ image: publicUrl });
-      res.send({ success: 'User updated successfully', imageUrl: publicUrl });
+       const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
+    
+       // Check if the URL is accessible
+       const response = await fetch(publicUrl);
+       if (response.status !== 200) {
+          return res.status(500).send({ error: 'Generated image URL is not accessible' });
+       }
+    
+       await db.collection('users').doc(userIdToEdit).update({ image: publicUrl });
+       res.send({ success: 'User updated successfully', imageUrl: publicUrl });
     });
-
+    
     blobStream.end(req.file.buffer);
 
   } catch (error) {
