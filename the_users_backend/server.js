@@ -12,8 +12,9 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/api/users', userRoutes);
 app.use('/uploads', express.static('uploads'))
+app.use('/api/users', userRoutes);
+
 
 app.listen(3002, () => {
   console.log('Server running on port 3000');
