@@ -55,43 +55,7 @@ router.get('/retrieve-data/:userId', verifyUser, verifyAdmin, async (req, res) =
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // Configure as needed
 
-// router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
-//     try {
-//         const userIdToEdit = req.params.userId;
-
-//         // Assuming you're sending the image as a file with the field name 'image'.
-//         // The file's path will be in req.file.path.
-//         if (!req.file) {
-//             return res.status(400).send({ error: 'No image provided.' });
-//         }
-
-//         const imagePath = req.file.path;
-
-//         // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
-//         // and then save the URL to Firestore. For now, let's just save the local path:
-//         await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
-
-//         res.send({ success: 'User updated successfully' });
-//     } catch (error) {
-//         console.error("Error updating user:", error);
-//         res.status(500).send({ error: 'Internal Server Error' });
-//     }
-// });
-router.post('/edit-user/:userId', verifyAdmin, (req, res, next) => {
-  upload.single('image')(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      return res.status(400).send({ error: 'Multer error: ' + err.message });
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      return res.status(500).send({ error: 'Upload error' });
-    }
-
-    // Everything went fine; proceed to next middleware.
-    next();
-  });
-}, async (req, res) => {
-  // ... rest of your endpoint logic ...
+router.post('/edit-user/:userId', verifyAdmin, upload.single('image'), async (req, res) => {
     try {
         const userIdToEdit = req.params.userId;
 
@@ -113,6 +77,42 @@ router.post('/edit-user/:userId', verifyAdmin, (req, res, next) => {
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+// router.post('/edit-user/:userId', verifyAdmin, (req, res, next) => {
+//   upload.single('image')(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       // A Multer error occurred when uploading.
+//       return res.status(400).send({ error: 'Multer error: ' + err.message });
+//     } else if (err) {
+//       // An unknown error occurred when uploading.
+//       return res.status(500).send({ error: 'Upload error' });
+//     }
+
+//     // Everything went fine; proceed to next middleware.
+//     next();
+//   });
+// }, async (req, res) => {
+//   // ... rest of your endpoint logic ...
+//     try {
+//         const userIdToEdit = req.params.userId;
+
+//         // Assuming you're sending the image as a file with the field name 'image'.
+//         // The file's path will be in req.file.path.
+//         if (!req.file) {
+//             return res.status(400).send({ error: 'No image provided.' });
+//         }
+
+//         const imagePath = req.file.path;
+
+//         // Ideally, you'd want to upload this image to a storage solution (like Firebase Cloud Storage)
+//         // and then save the URL to Firestore. For now, let's just save the local path:
+//         await db.collection('users').doc(userIdToEdit).update({ image: imagePath });
+
+//         res.send({ success: 'User updated successfully' });
+//     } catch (error) {
+//         console.error("Error updating user:", error);
+//         res.status(500).send({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 router.post('/set-admin', (req, res) => {
