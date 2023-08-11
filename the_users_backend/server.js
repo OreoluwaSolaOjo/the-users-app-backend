@@ -10,8 +10,8 @@ const app = express();
 
 
 app.use(cors({
- 
-  origin: 'https://64d60e0ac55b454ebe2891c8--earnest-strudel-469a22.netlify.app/',
+
+  origin: 'https://64d60e0ac55b454ebe2891c8--earnest-strudel-469a22.netlify.app',
   credentials: true
 }));
 // const allowedOrigins = [
