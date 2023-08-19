@@ -1,11 +1,9 @@
 import * as admin from 'firebase-admin';
 import { config } from 'dotenv';
 
-config();  // Initialize dotenv
+config(); 
 
-// If you had used a JSON import, TypeScript would understand it. 
-// But since you're building the object from environment variables, 
-// we'll use a type to define its shape.
+
 
 type ServiceAccount = {
   type: string;

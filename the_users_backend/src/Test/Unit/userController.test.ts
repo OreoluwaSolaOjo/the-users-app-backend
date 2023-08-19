@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 type DecodedUserToken = {
     uid: string;
-    // ... any other properties that a DecodedUserToken might have
+   
 };
 
 // Mocking Firebase and GCP calls here

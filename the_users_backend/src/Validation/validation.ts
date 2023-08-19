@@ -11,10 +11,10 @@ const SetAdminUserSchema = z.object({
     numOfProducts: z.number(),
     percentage: z.number(),
     email: z.string().email(),
-    // Assuming image is optional or coming from another source
+  
   });
   const EditUserSchema = z.object({
-    userId: z.string(), // Assuming the user ID is a string.
+    userId: z.string(),
   });
 
   export {SetAdminUserSchema, SubmitDataSchema, EditUserSchema}
