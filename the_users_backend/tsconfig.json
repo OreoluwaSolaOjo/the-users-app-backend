@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "module": "commonjs",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src",
+    "src/**/*",
+    "src/**/**/*.ts",
+    "src/**/*.js",
+    "src/*.ts",
+    "src/*.js",
+    "src/**/*.ts"
+  ]
+}
